@@ -1,9 +1,9 @@
 (module
  pandora-freetds
  *
- (import scheme chicken data-structures srfi-13)
+ (import scheme chicken data-structures srfi-13 regex)
 
- (use prometheus pandora freetds lru-cache uri-generic matchable)
+ (use prometheus pandora freetds lru-cache uri-generic matchable debug)
 
  (define-object *freetds-datastore* (*sql-datastore*)
    (db set-db! #f))
@@ -102,6 +102,7 @@
                  (params params))
      (if (null? sql)
          (begin
+           #;(debug (string-join (reverse replaced-sql)))
            (call-with-result-set
             (self 'db)
             (string-join (reverse replaced-sql))
@@ -115,7 +116,12 @@
                     (cons (if parameter?
                               ;; HACK: this is dangerous; implement
                               ;; parameters or escape this.
-                              (->string (car params))
+                              (format "'~a'"
+                                      (string-substitute "'"
+                                                         "''"
+                                                         (->string
+                                                          (car params))
+                                                         #t))
                               fragment)
                           replaced-sql)
                     (if parameter? (cdr params) params))))))
