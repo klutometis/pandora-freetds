@@ -1,0 +1,14 @@
+((egg "pandora-freetds.egg")
+ (license "MIT")
+ (category databases)
+ (needs setup-helper
+        prometheus
+        pandora
+        freetds
+        lru-cache
+        uri-generic
+        matchable)
+ (author "Peter Danenberg")
+ (synopsis "Pandora driver for FreeTDS")
+ (files "pandora-freetds.scm"
+        "pandora-freetds.setup"))
